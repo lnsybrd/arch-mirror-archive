@@ -39,6 +39,10 @@ def iso_sync(iso_sync_url, dest, period):
     log.debug('upstream_url: {0}'.format(upstream_url))
     log.debug('dest: {0}'.format(dest))
 
+    if not os.path.exists(dest):
+        log.debug('Making destination directory: {0}'.format(dest))
+        os.makedirs(dest)
+
     def dump_err(line):
         log.debug(line)
 
@@ -57,10 +61,17 @@ def repo_sync(pkg_sync_url, dest, date):
     target = '{0}/'.format(os.path.join(dest, date))
     log.debug('target: {0}'.format(target))
 
+    if not os.path.exists(target):
+        log.debug('Making target: {0}'.format(target))
+        os.makedirs(target)
+
     log.debug('Finding last sync')
     versions = [path for path in os.listdir(dest) if os.path.isdir(os.path.join(dest, path)) and not date == path]
     versions.sort()
-    latest = versions[-1]
+    if len(versions):
+        latest = versions[-1]
+    else:
+        latest = date
     log.debug('latest: {0}'.format(latest))
 
     source = '{0}/'.format(os.path.join(dest, latest))
@@ -112,7 +123,7 @@ def link_update(link_dir, version):
                 log.debug('we dont have a symlink, something is wrong: {0}'.format(link_tgt))
 
         else:
-            log.deubg('no existing link_tgt: {0}'.format(link_tgt))
+            log.debug('no existing link_tgt: {0}'.format(link_tgt))
             log.debug('version is now: {0}'.format(version_link_src))
 
             log.debug('ln -s {0} {1}'.format(version_link_src, link_tgt))
