@@ -14,10 +14,6 @@ import os
 
 from datetime import datetime
 
-# commands
-from sh import wget
-
-
 log = logging.getLogger('archarchive')
 
 
@@ -32,7 +28,7 @@ def cd(path):
 
 
 def iso_sync(iso_sync_url, dest, period):
-    log.debug('iso_sync(iso_sync_url: {0}, dest: {1})'.format(iso_sync_url, dest))
+    log.info('iso_sync(iso_sync_url: {0}, dest: {1})'.format(iso_sync_url, dest))
 
     # build the full upstream url with the root parent url and the current month
     upstream_url = "{0}/{1}/".format(iso_sync_url, period)
@@ -47,16 +43,16 @@ def iso_sync(iso_sync_url, dest, period):
         log.debug(line)
 
     with cd(dest):
-        log.debug('wget -e robots=off --reject "index.html*" --mirror --no-host-directories --cut-dirs=2 --no-parent {0}'.format(upstream_url))
-        output = wget('-nv', '-e robots=off', '--reject', '"index.html*"',
-                      '--mirror', '--no-host-directories', '--cut-dirs=2',
-                      '--no-parent', '{0}'.format(upstream_url),  _err=dump_err)
+        log.debug('wget -e robots=off --reject "index.html*" --mirror --no-host-directories \
+                  --cut-dirs=2 --no-parent {0}'.format(upstream_url))
 
-        log.debug(output)
+        os.system('wget -nv -e robots=off --reject "index.html*" \
+                      --mirror --no-host-directories --cut-dirs=2 \
+                      --no-parent {0}'.format(upstream_url))
 
 
 def repo_sync(pkg_sync_url, dest, date):
-    log.debug('repo_sync(pkg_sync_url: {0}, date: {1})'.format(pkg_sync_url, date))
+    log.info('repo_sync(pkg_sync_url: {0}, date: {1})'.format(pkg_sync_url, date))
 
     target = '{0}/'.format(os.path.join(dest, date))
     log.debug('target: {0}'.format(target))
@@ -80,8 +76,8 @@ def repo_sync(pkg_sync_url, dest, date):
     def dump_out(line):
         log.debug(line)
 
-    cmd = "rsync -rltvH "+ \
-          "--link-dest={0} ".format(source)+ \
+    cmd = "rsync -rltvH " + \
+          "--link-dest={0} ".format(source) + \
           "--exclude '*/.*' --exclude '*/os/i686' " + \
           "--exclude 'pool/*/*-i686.pkg.*' {0} {1}".format(pkg_sync_url, target)
 
@@ -90,7 +86,7 @@ def repo_sync(pkg_sync_url, dest, date):
 
 
 def link_update(link_dir, version):
-    log.debug('link_update(link_dir: {0}, version: {1})'.format(link_dir, version))
+    log.info('link_update(link_dir: {0}, version: {1})'.format(link_dir, version))
 
     current_link_tgt = os.path.join(link_dir, 'current')
     week_link_tgt = os.path.join(link_dir, 'week')
@@ -142,8 +138,6 @@ def link_update(link_dir, version):
 @click.option('--no-iso-sync', is_flag=True, show_default=True)
 @click.option('--no-repo-sync', is_flag=True, show_default=True)
 def sync(pkg_sync_url, iso_sync_url, run_dir, data_dir, version, debug, no_iso_sync, no_repo_sync):
-    click.echo("sync: pkg_sync_url: %s, iso_sync_url: %s, run_dir: %s, data_dir: %s, version: %s" % (pkg_sync_url, iso_sync_url, run_dir, data_dir, version))
-
     if debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger('sh').setLevel(logging.WARN)
