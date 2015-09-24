@@ -20,7 +20,7 @@ with open('requirements-test.txt') as requirements_file:
 
 setup(
     name='arch-mirror-archive',
-    version='2015.07.23',
+    version='2015.09.24',
     description="System to sync Arch Linux mirrors periodicly creating versioned snapshots",
     long_description=readme,
     author="Lindsay Bird",
