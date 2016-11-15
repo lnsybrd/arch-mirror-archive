@@ -1,41 +1,62 @@
-pkgver=2016.02.13
+pkgver=`date +%Y.%m.%d`
+pkgrel=`date +%H.%M`
 pkgname=(arch-mirror-archive)
-pkgrel=1
 pkgdesc='Arch mirror archive'
 arch=('any')
 url='https://github.com/lnsybrd/arch-mirror-archive'
 license=('MIT')
-depends=('python2'
+depends=('python'
          'btrfs-progs')
-makedepends=('python2'
-             'python2-setuptools'
-             'python2-virtualenv')
+makedepends=('python'
+             'python-setuptools'
+             'python-virtualenv')
 provides=('arch-mirror-archive')
+prefix=opt
 
 build() {
     # Build the virtual env
-    virtualenv2 --no-site-packages --always-copy $pkgname
-}
+    virtualenv \
+        --no-site-packages \
+        --always-copy \
+        ${pkgname}
 
-package() {
-    # Virtual env
+    # Turn on the virtual env
     source ${pkgname}/bin/activate
 
     # Do the install
-    cd ${startdir}
-    python2 setup.py install
+    pushd ${startdir}
+    ./setup.py install
+    popd
 
-    install -d "${pkgdir}/opt/${pkgname}"
-    find ${srcdir}/${pkgname}/bin -type f -exec awk '/^#!.*python/{print FILENAME} {nextfile}' {} + \
-        | xargs sed -i "s#!.*/bin#!/opt/${pkgname}/bin#"
+    # Remove pip and friends from the virtual env
+    pip list --format=columns
+    pip uninstall --yes setuptools
+    pip uninstall --yes wheel
+    pip uninstall --yes pip
 
-    cp -r --no-preserve=ownership ${srcdir}/${pkgname}/* "${pkgdir}/opt/${pkgname}/"
+    # Make the virtual env relocatable
+    virtualenv \
+        --relocatable \
+        ${srcdir}/${pkgname}
+}
+
+package() {
+    # Install files into pkg directory
+    install -d ${pkgdir}/${prefix}/${pkgname}
+    cp -r --no-preserve=ownership ${srcdir}/${pkgname}/* ${pkgdir}/${prefix}/${pkgname}/
 
     # Remove the ability to activate the venv in the package
-    rm -f ${pkgdir}/opt/${pkgname}/bin/activate*
+    rm -f ${pkgdir}/${prefix}/${pkgname}/bin/activate
+    rm -f ${pkgdir}/${prefix}/${pkgname}/bin/activate.*
+
+    # Don't make it easy to compile/link against this virtualenv
+    rm -f ${pkgdir}/${prefix}/${pkgname}/bin/python-config
 
     # Remove the include directory
-    rm -Rf ${pkgdir}/opt/${pkgname}/include
+    rm -Rf ${pkgdir}/${prefix}/${pkgname}/include
+
+    # Clean up left over stuff from pip
+    rm -f ${pkgdir}/${prefix}/${pkgname}/pip-selfcheck.json
 }
 
 # vim:set ts=4 sw=4 et:
