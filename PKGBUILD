@@ -1,9 +1,13 @@
-pkgver=`date +%Y.%m.%d`
-pkgrel=`date +%H.%M`
+pkgver=r2.f4ec86e
+pkgver() {
+    cd "${startdir}"
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+pkgrel=1
 pkgname=(arch-mirror-archive)
 pkgdesc='Arch mirror archive'
 arch=('any')
-url='https://github.com/lnsybrd/arch-mirror-archive'
+url='https://github.com/zeroxoneb/arch-mirror-archive'
 license=('MIT')
 depends=('python'
          'btrfs-progs')

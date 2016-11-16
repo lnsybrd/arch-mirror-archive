@@ -57,7 +57,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'click==4.0',
-        'ipython==5.1.0'
     ],
     license="MIT",
     zip_safe=False,
