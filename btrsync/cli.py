@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-archarchive.cli
----------------
+btrsync.cli
+--------------
 
-Main `archarchive.cli` CLI.
+Main `btrsync.cli` CLI.
 """
 import click
 import contextlib
@@ -14,7 +14,7 @@ import os
 
 from datetime import datetime
 
-log = logging.getLogger('archarchive')
+log = logging.getLogger('btrsync')
 
 
 @contextlib.contextmanager
@@ -96,10 +96,10 @@ def make_current(data_dir, version):
     os.symlink(os.path.join(data_dir, version), current)
 
 @click.command()
-@click.option('--sync-url', default="rsync://mirror.pkgbuild.com/packages/", show_default=True)
-@click.option('--data-dir', default='/srv/data/mirror/archlinux', show_default=True)
+@click.option('--sync-url', required=True)
+@click.option('--data-dir', required=True)
 @click.option('--version', default=datetime.now().strftime('%Y.%m.%d'), show_default=True)
-@click.option('--exclude', default=['*/os/i686', '*/.*', 'pool/*/*-i686.pkg.*'], multiple=True, show_default=True)
+@click.option('--exclude', multiple=True)
 @click.option('--delete/--no-delete', default=True, show_default=True)
 @click.option('--debug', is_flag=True, show_default=True)
 def sync(sync_url, data_dir, version, exclude, delete, debug):

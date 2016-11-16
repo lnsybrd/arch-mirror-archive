@@ -12,46 +12,39 @@ with open('README.rst') as readme_file:
 
 class SetupDevelop(develop):
     """
-        Command that sets up the development for the bacon code.
     """
 
     def finalize_options(self):
-        # Check to make sure we are in a virtual environment before we allow this to be run.
         if not os.getenv('VIRTUAL_ENV'):
-            print('ERROR: You are not in a virtual environment', sys.stderr)
+            print('ERROR: You must be in a virtual environment', sys.stderr)
             sys.exit(1)
         develop.finalize_options(self)
 
     def run(self):
-        # Run the normal develop operations
-        # Note: the develop base class is an 'old-style' class, as such super does not work.  We call
-        # the super run() method the old school way.
-        print('Installing development egg.')
         develop.run(self)
-        print('')
 
-        # Install the development only requirements
-        print('Install development PIP dependencies.')
+        # Install the dev requirements
+        print('>>> Install dev requirements')
         self.spawn('pip install --upgrade --requirement requirements-dev.txt'.split(' '))
-        print('Done installing development PIP dependencies.')
+        print('<<< Instell dev requirements')
 
 
 setup(
-    name='arch-mirror-archive',
+    name='btrsync',
     version='2016.11.15',
-    description="System to sync Arch Linux mirrors periodicly creating versioned snapshots with btrfs",
+    description="Rsync + btrfs archiving utility.",
     long_description=readme,
     author='zeroxoneb',
     author_email='zeroxoneb@gmail.com',
-    url='https://github.com/zeroxoneb/arch-mirror-archive',
+    url='https://github.com/zeroxoneb/btrsync',
     packages=[
-        'archarchive',
+        'btrsync',
     ],
-    package_dir={'archarchive':
-                 'archarchive'},
+    package_dir={'btrsync':
+                 'btrsync'},
     entry_points={
         'console_scripts': [
-            'arch-archive = archarchive.cli:sync',
+            'btrsync = btrsync.cli:sync',
         ]
     },
     include_package_data=True,
@@ -60,7 +53,7 @@ setup(
     ],
     license="MIT",
     zip_safe=False,
-    keywords='arch-mirror-archive',
+    keywords='btrsync',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

@@ -1,7 +1,7 @@
 ===============================
-Arch Mirror Archive
+Btrsync
 ===============================
 
-System to sync Arch Linux mirrors with periodic snapshots daily/weekly/monthly
+Create btrfs snapshots backups using rsync.
 
 * Free software: MIT license
