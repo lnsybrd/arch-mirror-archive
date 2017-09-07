@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
 import os
 import sys
 
 from setuptools import setup
 from setuptools.command.develop import develop
 
+
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
+
+def version():
+    return datetime.datetime.utcnow().strftime('%Y.%m.%d')
+
+
 class SetupDevelop(develop):
     """
+    Setup the development environemnt with: `./setup.py develop`
     """
 
     def finalize_options(self):
@@ -31,7 +39,7 @@ class SetupDevelop(develop):
 
 setup(
     name='btrsync',
-    version='2016.11.15',
+    version=version(),
     description="Rsync + btrfs archiving utility.",
     long_description=readme,
     author='zeroxoneb',
@@ -49,13 +57,12 @@ setup(
     },
     include_package_data=True,
     install_requires=[
-        'click==4.0',
+        'click==6.0',
     ],
     license="MIT",
     zip_safe=False,
     keywords='btrsync',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
