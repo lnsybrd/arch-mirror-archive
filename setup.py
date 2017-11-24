@@ -33,7 +33,7 @@ class SetupDevelop(develop):
 
         # Install the dev requirements
         print('>>> Install dev requirements')
-        self.spawn('pip install --upgrade --requirement requirements-dev.txt'.split(' '))
+        self.spawn('pip install --upgrade --requirement requirements/dev.txt'.split(' '))
         print('<<< Instell dev requirements')
 
 
