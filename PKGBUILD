@@ -1,4 +1,4 @@
-pkgver=r6.53688af
+pkgver=r7.5eadfb1
 pkgver() {
     cd "${startdir}"
     printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -32,10 +32,10 @@ prepare() {
 build() {
     # Build the virtual env
     virtualenv \
+        --no-site-packages \
         --always-copy \
         venv/${pkgname}
 
-        # --no-site-packages \
 
     # Turn on the virtual env
     source venv/${pkgname}/bin/activate
@@ -47,7 +47,6 @@ build() {
 
     # Remove pip and friends from the virtual env
     pip list --format=columns
-    pip uninstall --yes setuptools
     pip uninstall --yes wheel
     pip uninstall --yes pip
 
