@@ -1,4 +1,4 @@
-pkgver=r5.75ad3b7
+pkgver=r6.53688af
 pkgver() {
     cd "${startdir}"
     printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -32,9 +32,10 @@ prepare() {
 build() {
     # Build the virtual env
     virtualenv \
-        --no-site-packages \
         --always-copy \
         venv/${pkgname}
+
+        # --no-site-packages \
 
     # Turn on the virtual env
     source venv/${pkgname}/bin/activate
