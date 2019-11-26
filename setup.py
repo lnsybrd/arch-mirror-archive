@@ -57,19 +57,15 @@ setup(
     },
     include_package_data=True,
     install_requires=[
-        'click==6.7',
+        'click==7.0',
     ],
     license="MIT",
     zip_safe=False,
     keywords='btrsync',
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Natural Language :: English',
+        'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
     ],
     cmdclass={
         'develop': SetupDevelop
