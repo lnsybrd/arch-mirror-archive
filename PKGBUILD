@@ -33,10 +33,8 @@ prepare() {
 build() {
   # Build the virtual env
   virtualenv \
-    --no-site-packages \
     --always-copy \
     venv/${pkgname}
-
 
   # Turn on the virtual env
   source venv/${pkgname}/bin/activate
@@ -50,11 +48,6 @@ build() {
   pip list --format=columns
   pip uninstall --yes wheel
   pip uninstall --yes pip
-
-  # Make the virtual env relocatable
-  virtualenv \
-    --relocatable \
-    ${srcdir}/venv/${pkgname}
 }
 
 package() {
